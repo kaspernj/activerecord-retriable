@@ -14,7 +14,7 @@ module ActiveRecordRetriable
     def transaction(retry_on: Rails.configuration.active_record_retriable&.dig(:default_transaction_error_types),
                     num_retries: Rails.configuration.active_record_retriable&.dig(:default_transaction_retries) || 1,
                     before_retry: nil,
-                    wait: Rails.configuration.active_record_retriable&.dig(:default_wait)
+                    wait: Rails.configuration.active_record_retriable&.dig(:default_wait),
                     **options, &block)
       return super(**options, &block) if retry_on.blank?
 
