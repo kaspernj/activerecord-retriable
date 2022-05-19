@@ -15,7 +15,7 @@ module ActiveRecordRetriable
   end
 
   module ClassMethods
-    def transaction(retry_on: nil,
+    def transaction(retry_on: Rails.configuration.active_record.default_transaction_error_types,
                     num_retries: Rails.configuration.active_record.default_transaction_retries,
                     before_retry: nil,
                     **options, &block)
