@@ -10,14 +10,11 @@ require 'active_support/core_ext/array/wrap'
 module ActiveRecordRetriable
   extend ActiveSupport::Concern
 
-  included do
-    Rails.configuration.active_record.default_transaction_retries = 1
-  end
-
   module ClassMethods
-    def transaction(retry_on: nil,
-                    num_retries: Rails.configuration.active_record.default_transaction_retries,
+    def transaction(retry_on: Rails.configuration.active_record_retriable&.dig(:default_transaction_error_types),
+                    num_retries: Rails.configuration.active_record_retriable&.dig(:default_transaction_retries) || 1,
                     before_retry: nil,
+                    wait: Rails.configuration.active_record_retriable&.dig(:default_wait),
                     **options, &block)
       return super(**options, &block) if retry_on.blank?
 
@@ -30,6 +27,7 @@ module ActiveRecordRetriable
         num_retries += 1
         if total_retries.nil? || num_retries <= total_retries
           before_retry&.call(num_retries, e)
+          sleep wait if wait
           retry
         end
         raise
