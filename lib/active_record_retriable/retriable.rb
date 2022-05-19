@@ -11,7 +11,7 @@ module ActiveRecordRetriable
   extend ActiveSupport::Concern
 
   included do
-    Rails.configuration.active_record.default_transaction_retries = 1
+    Rails.configuration.active_record.default_transaction_retries ||= 1
   end
 
   module ClassMethods
